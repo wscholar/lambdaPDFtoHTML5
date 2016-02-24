@@ -36,7 +36,8 @@ public class convertPdfToHtml implements RequestHandler<S3EventNotification, Obj
 		String destbucket = "pdfconverted";
 		String topicArn = "arn:aws:sns:us-west-2:526877812830:PDFConverted";
 		String rootsubfoldertocreate = "";
-
+		String keyname = "";
+		String bucketname = "";
 		// Write log to CloudWatch using LambdaLogger.
 
 		logger.log("pdftohtml fired for " + input.toJson());
@@ -49,11 +50,13 @@ public class convertPdfToHtml implements RequestHandler<S3EventNotification, Obj
 			logger.log("S3EventNotificationRecord fired for s3 object bucket" + s3record.getS3().getBucket().getName());
 			logger.log("S3EventNotificationRecord fired for s3 object key" + s3record.getS3().getObject().getKey());
 
-			rootsubfoldertocreate = s3record.getS3().getObject().getKey().substring(0, s3record.getS3().getObject().getKey().lastIndexOf('.'));
-			File localFile = new File("/tmp/" + s3record.getS3().getObject().getKey());
+			keyname = s3record.getS3().getObject().getKey().replaceAll("\\+", " ");
+			bucketname = s3record.getS3().getBucket().getName().replaceAll("\\+", " ");
 
-			ObjectMetadata s3meta = s3Client.getObject(new GetObjectRequest(s3record.getS3().getBucket().getName(), s3record.getS3().getObject().getKey()),
-					localFile);
+			rootsubfoldertocreate = keyname.substring(0, keyname.lastIndexOf('.'));
+			File localFile = new File("/tmp/" + keyname);
+
+			ObjectMetadata s3meta = s3Client.getObject(new GetObjectRequest(bucketname, keyname), localFile);
 
 			HTMLConversionOptions conversionOptions = new HTMLConversionOptions();//Set conversion options here
 			conversionOptions.setDisableComments(true);
@@ -87,7 +90,7 @@ public class convertPdfToHtml implements RequestHandler<S3EventNotification, Obj
 						+ timeinseconds + "seconds. Click the link to view " + urltopdf;
 
 				//delete pdf from ingest bucket
-				s3Client.deleteObject(new DeleteObjectRequest(s3record.getS3().getBucket().getName(), s3record.getS3().getObject().getKey()));
+				s3Client.deleteObject(new DeleteObjectRequest(bucketname, keyname));
 
 				AmazonSNSClient snsClient = new AmazonSNSClient();
 				snsClient.setRegion(Region.getRegion(Regions.US_WEST_2));
@@ -101,7 +104,7 @@ public class convertPdfToHtml implements RequestHandler<S3EventNotification, Obj
 				logger.log("Exception in pdftohtml S3EventNotificationRecord at" + s3record.getEventTime().toDateTime());
 				logger.log(ex.getMessage());
 				logger.log(ex.getCause().toString());
-				logger.log("Exception in pdftohtml PDFIN was=" + s3record.getS3().getObject().getKey());
+				logger.log("Exception in pdftohtml PDFIN was=" + s3record.getS3().getObject().getKey() + " cleanname=" + keyname);
 				logger.log(s3record.toString());
 			}
 
