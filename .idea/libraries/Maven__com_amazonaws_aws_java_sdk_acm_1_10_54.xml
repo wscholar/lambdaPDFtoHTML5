@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.amazonaws:aws-java-sdk-acm:1.10.54">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/amazonaws/aws-java-sdk-acm/1.10.54/aws-java-sdk-acm-1.10.54.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/amazonaws/aws-java-sdk-acm/1.10.54/aws-java-sdk-acm-1.10.54-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/amazonaws/aws-java-sdk-acm/1.10.54/aws-java-sdk-acm-1.10.54-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
