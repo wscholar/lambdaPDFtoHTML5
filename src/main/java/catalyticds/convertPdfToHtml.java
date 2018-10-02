@@ -33,8 +33,8 @@ public class convertPdfToHtml implements RequestHandler<S3EventNotification, Obj
 		long startTime = System.currentTimeMillis();
 		LambdaLogger logger = context.getLogger();
 		AmazonS3Client s3Client = new AmazonS3Client();
-		String destbucket = "pdfconverted";
-		String topicArn = "arn:aws:sns:us-west-2:526877812830:PDFConverted";
+		String destbucket = "xxxxxx";
+		String topicArn = "xxxxxxxxx";
 		String rootsubfoldertocreate = "";
 		String keyname = "";
 		String bucketname = "";
@@ -43,13 +43,7 @@ public class convertPdfToHtml implements RequestHandler<S3EventNotification, Obj
 		logger.log("pdftohtml fired for " + input.toJson());
 
 		for (S3EventNotificationRecord s3record : input.getRecords())
-		{
-			//for now assume the event is good and only one
-			logger.log("S3EventNotificationRecord fired for event Name " + s3record.getEventName());
-			logger.log("S3EventNotificationRecord fired for event time" + s3record.getEventTime().toDateTime());
-			logger.log("S3EventNotificationRecord fired for s3 object bucket" + s3record.getS3().getBucket().getName());
-			logger.log("S3EventNotificationRecord fired for s3 object key" + s3record.getS3().getObject().getKey());
-
+		{  
 			keyname = s3record.getS3().getObject().getKey().replaceAll("\\+", " ");
 			bucketname = s3record.getS3().getBucket().getName().replaceAll("\\+", " ");
 
@@ -114,7 +108,7 @@ public class convertPdfToHtml implements RequestHandler<S3EventNotification, Obj
 		return null;
 	}
 
-	//WMS TODO ADD s3 code
+	 
 	public static void uploadfilestoS3(File dir, AmazonS3Client s3Client, String destbucket, String rootsubfolder) {
 		try {
 			File[] files = dir.listFiles();
